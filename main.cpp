@@ -13,15 +13,17 @@ struct contacto
 
 class Agenda
 {
+
 private:
 	contacto *inicio, *ultimo;
 	int numeroContactos = 0;
 
 public:
 	bool activo = true;
-	fstream escritor;
+	ofstream escritor;
 	Agenda()
 	{
+	    escritor.open("agendatest.txt",ios::app);
 		inicio = NULL;
 		ultimo = NULL;
 	}
@@ -40,18 +42,12 @@ public:
 		temp = inicio;
 
 		while (temp != NULL) {
-            escritor.open("lista_de_contactos.txt");
-			escritor << posicion <<" - Nombre: " << temp->nombre << endl;
-            escritor << "  Telefono: " << temp->telefono << endl;
-            escritor << "  Email: " << temp->email << endl;
-            escritor << "////////////////////////////////////////////////////" << endl;
-            escritor << string(1,'\n');
-			temp = temp->next;
+			EscribirContacto(temp->nombre,temp->telefono,temp->email,posicion);
+;			temp = temp->next;
 			posicion++;
 		}
 
 		cout << string(2, '\n');
-		escritor.close();
 	}
 
 	void AgregarContacto()
@@ -65,6 +61,7 @@ public:
 		cin >> _telefono;
 		cout << "Ingrese el email" << endl;
 		cin >> _email;
+
 
 		contacto *temp = new contacto;
 		temp->nombre = _nombre;
@@ -82,13 +79,9 @@ public:
 			ultimo->next = temp;
 			ultimo = temp;
 		}
-
 		numeroContactos++;
+		EscribirContacto(_nombre,_telefono,_email,numeroContactos);
 		cout << "Contacto Agregado";
-
-		escritor.open("lista_de_contactos.txt", ios::app);
-		EscribirContacto(_nombre, _telefono, _email, numeroContactos);
-        escritor.close();
 
 		system("CLS");
 	}
@@ -256,6 +249,7 @@ public:
 			EditarContacto();
 			break;
 		case 5:
+		    escritor.close();
 			activo = false;
 			break;
 		default:
